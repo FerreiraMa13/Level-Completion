@@ -16,9 +16,10 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 rotate_inputs = Vector2.zero;
     private float jump_velocity = 0.0f;
     private float turn_smooth_velocity;
+    
 
     public float movement_speed = 2.0f;
-    public int number_of_jumps = 0;
+    public int number_of_jumps = 1;
     public float jump_force = 10.0f;
     public float gravity = 9.8f;
     public float additional_decay = 0.0f;
@@ -42,13 +43,44 @@ public class PlayerMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        HandleJump();
         HandleMovement();
+    }
+    private void HandleJump()
+    {
+        if (controller.isGrounded)
+        {
+            if (jumping && additional_decay >= decay_multiplier)
+            {
+                Debug.Log("Landed");
+                jumping = false;
+                additional_decay = 0.0f;
+                jump_attempts = 0;
+            }
+        }
+        if (jumping)
+        {
+            jump_velocity -= (gravity * Time.deltaTime) + additional_decay;
+            additional_decay += (Time.deltaTime * movement_speed * decay_multiplier);
+        }
+
+    }
+    private void Jump()
+    {
+        Debug.Log("Jump");
+        if (jump_attempts < number_of_jumps && !landing)
+        {
+            jumping = true;
+            jump_velocity = jump_force;
+            additional_decay = 0.0f;
+            jump_attempts += 1;
+        }
     }
     private void HandleMovement()
     {
         Vector3 input_direction = new(movement_inputs.x, 0.0f, movement_inputs.y);
         Vector3 rotation_direction = new(rotate_inputs.x, 0.0f, rotate_inputs.y);
-        Vector3 rotate = RotateCalc(rotation_direction, cam_transform.transform.eulerAngles.y);
+        Vector3 rotate = RotateCalc(rotation_direction, /*cam_transform.transform.eulerAngles.y*/ transform.rotation.y);
         Vector3 movement = XZMoveCalc(rotate);
 
         movement.y = jump_velocity;
@@ -95,7 +127,6 @@ public class PlayerMovement : MonoBehaviour
         var movement = movement_y + movement_x;
         return movement;
     }
-
     private bool Compare2Deadzone(float value)
     {
         if (value < deadzone)
@@ -112,6 +143,7 @@ public class PlayerMovement : MonoBehaviour
         controls = new();
         controls.Player.Move.performed += ctx => movement_inputs = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement_inputs = Vector2.zero;
+        controls.Player.Jump.performed += ctx => Jump();
         /*controls.Player.Look.performed += ctx => rotate_inputs = ctx.ReadValue<Vector2>();
         controls.Player.Look.canceled += ctx => rotate_inputs = Vector2.zero;*/
     }
