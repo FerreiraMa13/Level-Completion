@@ -46,7 +46,7 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Fire"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""46f21dd9-2e42-434b-978d-b86d04404aba"",
                     ""expectedControlType"": ""Button"",
@@ -58,6 +58,24 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
                     ""id"": ""3d1fc6f9-b3a4-4878-a7d8-3f274c718aa5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Manual Rotation Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""9a0df67a-500f-41dc-b1a0-f61f13dc2dd5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Manual Rotation Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""16b208fc-b31e-4fab-ae1c-580aacf9f785"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -237,18 +255,18 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
-                    ""action"": ""Fire"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""05f6913d-c316-48b2-a6bb-e225f14c7960"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Fire"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -259,7 +277,7 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Touch"",
-                    ""action"": ""Fire"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -270,7 +288,7 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Joystick"",
-                    ""action"": ""Fire"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -281,7 +299,7 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""XR"",
-                    ""action"": ""Fire"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -293,6 +311,28 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""03fdd5ca-bfc6-4116-8068-d72c4b84c6d7"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Manual Rotation Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2c2179cf-a103-42fc-994c-3bed9754d41e"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Manual Rotation Left"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -882,8 +922,10 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
-        m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_ManualRotationRight = m_Player.FindAction("Manual Rotation Right", throwIfNotFound: true);
+        m_Player_ManualRotationLeft = m_Player.FindAction("Manual Rotation Left", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -957,16 +999,20 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
-    private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_ManualRotationRight;
+    private readonly InputAction m_Player_ManualRotationLeft;
     public struct PlayerActions
     {
         private @CompletionControls m_Wrapper;
         public PlayerActions(@CompletionControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
-        public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @ManualRotationRight => m_Wrapper.m_Player_ManualRotationRight;
+        public InputAction @ManualRotationLeft => m_Wrapper.m_Player_ManualRotationLeft;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -982,12 +1028,18 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                 @Look.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLook;
-                @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
-                @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @ManualRotationRight.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnManualRotationRight;
+                @ManualRotationRight.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnManualRotationRight;
+                @ManualRotationRight.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnManualRotationRight;
+                @ManualRotationLeft.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnManualRotationLeft;
+                @ManualRotationLeft.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnManualRotationLeft;
+                @ManualRotationLeft.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnManualRotationLeft;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -998,12 +1050,18 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
-                @Fire.started += instance.OnFire;
-                @Fire.performed += instance.OnFire;
-                @Fire.canceled += instance.OnFire;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @ManualRotationRight.started += instance.OnManualRotationRight;
+                @ManualRotationRight.performed += instance.OnManualRotationRight;
+                @ManualRotationRight.canceled += instance.OnManualRotationRight;
+                @ManualRotationLeft.started += instance.OnManualRotationLeft;
+                @ManualRotationLeft.performed += instance.OnManualRotationLeft;
+                @ManualRotationLeft.canceled += instance.OnManualRotationLeft;
             }
         }
     }
@@ -1162,8 +1220,10 @@ public partial class @CompletionControls : IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
-        void OnFire(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnManualRotationRight(InputAction.CallbackContext context);
+        void OnManualRotationLeft(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -16,7 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 rotate_inputs = Vector2.zero;
     private float jump_velocity = 0.0f;
     private float turn_smooth_velocity;
-    
+    public Vector2 manual_rotation = Vector2.zero;
+    public Vector2 gradual_rotation = Vector2.zero;
 
     public float movement_speed = 2.0f;
     public int number_of_jumps = 1;
@@ -27,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     public float backwards_multiplier = -0.5f;
     public float deadzone = 0.1f;
     public float turn_smooth_time = 0.1f;
+    public float manual_step = 0.1f;
 
     [System.NonSerialized] public bool jumping = false;
     [System.NonSerialized] public bool landing = false;
@@ -35,8 +37,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        composer = main_cam.GetCinemachineComponent<CinemachineComposer>();
-        transposer = main_cam.GetCinemachineComponent<CinemachineTransposer>();
+        /*composer = main_cam.GetCinemachineComponent<CinemachineComposer>();
+        transposer = main_cam.GetCinemachineComponent<CinemachineTransposer>();*/
         cam_transform = GameObject.FindGameObjectWithTag("MainCamera").transform;
 
         SetUpControls();
@@ -79,8 +81,8 @@ public class PlayerMovement : MonoBehaviour
     private void HandleMovement()
     {
         Vector3 input_direction = new(movement_inputs.x, 0.0f, movement_inputs.y);
-        Vector3 rotation_direction = new(rotate_inputs.x, 0.0f, rotate_inputs.y);
-        Vector3 rotate = RotateCalc(rotation_direction, /*cam_transform.transform.eulerAngles.y*/ transform.rotation.y);
+        Vector3 rotation_direction = new(rotate_inputs.x, 0.0f, 0.0f);
+        Vector3 rotate = RotateCalc(rotation_direction, cam_transform.transform.eulerAngles.y/* transform.rotation.y*/);
         Vector3 movement = XZMoveCalc(rotate);
 
         movement.y = jump_velocity;
@@ -94,7 +96,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 RotateCalc(Vector3 inputs, float anchor_rotation)
     {
         inputs.Normalize();
-        float rotateAngle = Mathf.Atan2(inputs.x, inputs.z) * Mathf.Rad2Deg + anchor_rotation;
+        inputs *= manual_step;
+        float rotateAngle = Mathf.Atan2(inputs.x, inputs.y) * Mathf.Rad2Deg + anchor_rotation;
         float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotateAngle, ref turn_smooth_velocity, turn_smooth_time);
         transform.rotation = Quaternion.Euler(0.0f, smoothAngle, 0.0f);
 
@@ -138,12 +141,32 @@ public class PlayerMovement : MonoBehaviour
         }
         return true;
     }
+    private void SanInput(float value, bool right)
+    {
+        if(value != 0)
+        {
+            if(right) {manual_rotation.y = value;}
+            else {manual_rotation.x = value;}
+            rotate_inputs.x = value;
+        }
+        else
+        {
+            if (right) { manual_rotation.y = 0; }
+            else { manual_rotation.x = 0; }
+            rotate_inputs.x = 0;
+
+        }
+    }
     private void SetUpControls()
     {
         controls = new();
         controls.Player.Move.performed += ctx => movement_inputs = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => movement_inputs = Vector2.zero;
         controls.Player.Jump.performed += ctx => Jump();
+        controls.Player.ManualRotationRight.performed += ctx => SanInput(1, true);
+        controls.Player.ManualRotationRight.canceled += ctx => SanInput(0, true);
+        controls.Player.ManualRotationLeft.performed += ctx => SanInput(-1, false);
+        controls.Player.ManualRotationLeft.canceled += ctx => SanInput(0, false);
         /*controls.Player.Look.performed += ctx => rotate_inputs = ctx.ReadValue<Vector2>();
         controls.Player.Look.canceled += ctx => rotate_inputs = Vector2.zero;*/
     }
