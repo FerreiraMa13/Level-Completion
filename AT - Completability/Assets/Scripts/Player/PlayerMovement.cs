@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
     private CompletionControls controls;
     private CharacterController controller;
-    public CinemachineVirtualCamera main_cam;
-    private CinemachineTransposer transposer;
-    private CinemachineComposer composer;
     private Transform cam_transform;
 
     private Vector2 movement_inputs = Vector2.zero;
@@ -37,10 +35,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        /*composer = main_cam.GetCinemachineComponent<CinemachineComposer>();
-        transposer = main_cam.GetCinemachineComponent<CinemachineTransposer>();*/
         cam_transform = GameObject.FindGameObjectWithTag("MainCamera").transform;
-
         SetUpControls();
     }
     private void FixedUpdate()
@@ -82,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 input_direction = new(movement_inputs.x, 0.0f, movement_inputs.y);
         Vector3 rotation_direction = new(rotate_inputs.x, 0.0f, 0.0f);
-        Vector3 rotate = RotateCalc(rotation_direction, cam_transform.transform.eulerAngles.y/* transform.rotation.y*/);
+        Vector3 rotate = RotateCalc(rotation_direction, /*cam_transform.transform.eulerAngles.y*/transform.eulerAngles.y);
         Vector3 movement = XZMoveCalc(rotate);
 
         movement.y = jump_velocity;
