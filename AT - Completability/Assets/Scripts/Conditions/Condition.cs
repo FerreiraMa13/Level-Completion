@@ -5,7 +5,7 @@ using UnityEngine;
 public class Condition : MonoBehaviour
 {
     public bool valid = true;
-    public bool achieved = true;
+    public bool achieved = false;
     public bool ongoing = false;
 
     public bool CheckCondition()

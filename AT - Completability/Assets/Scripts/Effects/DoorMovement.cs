@@ -13,11 +13,15 @@ public class DoorMovement : Effect
     public float opening_speed = 1;
     public float error_margin = 0.5f;
 
-    private bool active_movement = false;
+    public bool active_movement = false;
     private bool forward = true;
 
     private void Awake()
     {
+        if(door == null)
+        {
+            door = gameObject;
+        }
         end_point = door.transform.position + door_movement;
         start_point = door.transform.position;
     }

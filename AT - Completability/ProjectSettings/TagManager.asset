@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Goal
   - CheckMinion
+  - ObstacleCheckpoint
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Floor
   - Water
   - UI
-  - 
-  - 
+  - Obstacle
+  - Player
   - 
   - 
   - 

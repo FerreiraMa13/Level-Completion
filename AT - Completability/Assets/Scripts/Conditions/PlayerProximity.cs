@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class PlayerProximity : Condition
 {
-    private bool player_proximity = false;
+    public bool player_proximity = false;
     protected override bool CheckRequirments()
     {
         return player_proximity;
