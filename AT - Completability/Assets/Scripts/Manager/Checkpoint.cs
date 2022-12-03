@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    public GameObject required_chechpoint = null;
+    public List<GameObject> required_chechpoints = null;
     public bool accounted = false;
 }

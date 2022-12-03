@@ -5,7 +5,7 @@ using UnityEngine;
 public class Button : Interactible
 {
     public List<Condition> conditions = new();
-    public Effect effect;
+    public List<Effect> effects;
 
     private void Awake()
     {
@@ -17,16 +17,23 @@ public class Button : Interactible
                 conditions.Add(condition);
             }
         }
-        if (effect == null)
+        var temp_effects = GetComponents<Effect>();
+        foreach(var effect in temp_effects)
         {
-            effect = GetComponent<Effect>();
+            if (!effects.Contains(effect))
+            {
+                effects.Add(effect);
+            }
         }
     }
     public override void Interact()
     {
         if(CheckConditions())
         {
-            effect.Activate();
+            foreach(var effect in effects)
+            {
+                effect.Activate();
+            }
         }
     }
 
@@ -41,5 +48,4 @@ public class Button : Interactible
         }
         return true;
     }
-    
 }

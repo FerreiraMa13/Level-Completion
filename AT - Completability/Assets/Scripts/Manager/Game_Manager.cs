@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Game_Manager : MonoBehaviour
 {
+    public bool perform_check = true;
     private Check_AI minion;
     private GameObject goal;
     private PlayerMovement player;
@@ -17,10 +18,13 @@ public class Game_Manager : MonoBehaviour
     {
         minion = GameObject.FindGameObjectWithTag(minion_tag).GetComponent<Check_AI>();
         goal = GameObject.FindGameObjectWithTag(goal_tag);
-
-        checkpoints.Add(goal.transform);
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
-        player.DisableInput();
+
+        if (perform_check)
+        {
+            checkpoints.Add(goal.transform);
+            player.DisableInput();
+        }
     }
     private void Start()
     {
@@ -29,24 +33,22 @@ public class Game_Manager : MonoBehaviour
     }
     private void Update()
     {
-        if(tick)
+        if (tick)
         {
-            if(checkpoints.Count > 0)
+            if (checkpoints.Count > 0)
             {
                 minion.SetDestination(checkpoints[0].position);
             }
             tick = false;
         }
     }
-
     public void RequestTick()
     {
         tick = true;
     }
-
     public void RemoveFirst()
     {
-        if(checkpoints.Count > 0)
+        if (checkpoints.Count > 0)
         {
             checkpoints.RemoveAt(0);
         }
@@ -57,7 +59,7 @@ public class Game_Manager : MonoBehaviour
     }
     public void AddAt(int index, Transform transform)
     {
-        if(!checkpoints.Contains(transform))
+        if (!checkpoints.Contains(transform))
         {
             checkpoints.Insert(index, transform);
         }

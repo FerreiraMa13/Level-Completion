@@ -15,7 +15,7 @@ public class Check_AI : MonoBehaviour
     public float stopped_step_treshold = 0.05f;
     public Vector3 past_position;
     public bool valid = true;
-    
+
 
     private void Awake()
     {
@@ -24,7 +24,7 @@ public class Check_AI : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(valid)
+        if (valid)
         {
             var difference = transform.position - past_position;
             if (difference.magnitude <= stopped_step_treshold || agent.isStopped)
@@ -51,31 +51,43 @@ public class Check_AI : MonoBehaviour
             }
             past_position = transform.position;
         }
-        
+
     }
-    public void SetDestination(Vector3 new_destination)
-    {
-        agent.SetDestination (new_destination);
-        destination = new_destination;
-    }
+
     private void OnTriggerEnter(Collider other)
     {
         var script = other.gameObject.GetComponent<Checkpoint>();
-        if(script != null)
+        if (script != null)
         {
-            if(!script.accounted)
+            if (!script.accounted)
             {
-                if (script.required_chechpoint != null)
-                {
-                    manager.AddAt(0, script.required_chechpoint.transform);
-                    manager.AddAt(1, other.transform);
-                }
-                script.accounted = true;
-                if(!manager.tick)
-                {
-                    manager.RequestTick();
-                }
+                UpdateCheckpoints(script);
             }
         }
+    }
+
+    public void SetDestination(Vector3 new_destination)
+    {
+        agent.SetDestination(new_destination);
+        destination = new_destination;
+    }
+    private void UpdateCheckpoints(Checkpoint script)
+    {
+        if (script.required_chechpoints != null)
+        {
+            manager.AddAt(0, script.gameObject.transform);
+            int checkpoint_index = 0;
+            foreach (var requirement in script.required_chechpoints)
+            {
+                manager.AddAt(checkpoint_index, requirement.transform);
+                checkpoint_index++;
+            }
+        }
+        script.accounted = true;
+        RequestTick();
+    }
+    private void RequestTick()
+    {
+        if (!manager.tick){manager.RequestTick();}
     }
 }

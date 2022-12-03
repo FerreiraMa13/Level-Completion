@@ -7,6 +7,7 @@ TagManager:
   - Goal
   - CheckMinion
   - ObstacleCheckpoint
+  - Manager
   layers:
   - Default
   - TransparentFX
