@@ -35,13 +35,20 @@ public class Check_AI : MonoBehaviour
                     var destination_dif = destination - transform.position;
                     if (destination_dif.magnitude <= objective_treshhold)
                     {
-                        manager.RemoveFirst();
-                        manager.RequestTick();
-                        patience_timer = patient;
+                        if (manager.CheckAchieved())
+                        {
+                            manager.RemoveFirst();
+                            manager.RequestTick();
+                            patience_timer = patient;
+                        }
+                        else
+                        {
+                            RequestNotComplete(manager.checkpoints[0].name);
+                        }
                     }
                     else
                     {
-                        Debug.Log("No movement available");
+                        RequestNotComplete("stuck on geometry");
                     }
                 }
             }
@@ -61,6 +68,7 @@ public class Check_AI : MonoBehaviour
         {
             if (!script.accounted)
             {
+                Debug.Log("UpdateCheckpoints");
                 UpdateCheckpoints(script);
             }
         }
@@ -75,19 +83,34 @@ public class Check_AI : MonoBehaviour
     {
         if (script.required_chechpoints != null)
         {
-            manager.AddAt(0, script.gameObject.transform);
+            manager.AddAt(0, script);
             int checkpoint_index = 0;
             foreach (var requirement in script.required_chechpoints)
             {
-                manager.AddAt(checkpoint_index, requirement.transform);
-                checkpoint_index++;
+                if(!manager.checkpoints.Contains(requirement))
+                {
+                    manager.AddAt(checkpoint_index, requirement);
+                    checkpoint_index++;
+                }
+            }
+        }
+        else
+        {
+            if(!script.achieved)
+            {
+                RequestNotComplete(script.gameObject.name);
             }
         }
         script.accounted = true;
+        
         RequestTick();
     }
     private void RequestTick()
     {
         if (!manager.tick){manager.RequestTick();}
+    }
+    private void RequestNotComplete(string name)
+    {
+        manager.RequestNotComplete(name);
     }
 }

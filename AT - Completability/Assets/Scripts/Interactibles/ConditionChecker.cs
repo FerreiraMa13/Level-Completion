@@ -38,6 +38,7 @@ public class ConditionChecker : MonoBehaviour
             foreach(var effect in effects)
             {
                 effect.Activate();
+                Debug.Log("Effect Activate");
             }
             past_activation = achieved;
         }

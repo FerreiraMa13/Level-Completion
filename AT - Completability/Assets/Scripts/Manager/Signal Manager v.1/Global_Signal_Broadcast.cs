@@ -33,6 +33,7 @@ public class Global_Signal_Broadcast : Effect
                 foreach (var channel in channels)
                 {
                     signal_manager.OverrideChannel(channel, state);
+                    Debug.Log("Channel " + channel + "  was changed");
                 }
             }
         }

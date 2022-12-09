@@ -8,6 +8,8 @@ TagManager:
   - CheckMinion
   - ObstacleCheckpoint
   - Manager
+  - DefaultUI
+  - FailedUI
   layers:
   - Default
   - TransparentFX

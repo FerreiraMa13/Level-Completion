@@ -14,7 +14,7 @@ public class DoorMovement : Effect
     public float error_margin = 0.5f;
 
     public bool active_movement = false;
-    private bool forward = true;
+    private bool forward = false;
 
     private void Awake()
     {
