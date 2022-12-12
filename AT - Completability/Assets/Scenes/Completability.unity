@@ -3567,7 +3567,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5540fe3364eb734bb70dd065d11268a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  perform_check: 0
+  perform_check: 1
   minion_tag: CheckMinion
   goal_tag: Goal
   tick: 0
