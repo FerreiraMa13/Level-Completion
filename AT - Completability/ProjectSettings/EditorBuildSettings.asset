@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Completability (Christmas).unity
+    guid: da8e3f573f11b6a4684fc3ec9c187478
   m_configObjects: {}
